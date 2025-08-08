@@ -1,0 +1,22 @@
+# Directorios de dependencias
+/node_modules
+/dist
+
+# Archivos de compilación
+.cache
+.env
+.env.*
+.npmrc
+npm-debug.log
+yarn-error.log
+
+# IDEs y editores de código
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.sublime-project
+*.sublime-workspace
+
+# Logs y bases de datos locales
+*.log
+*.db

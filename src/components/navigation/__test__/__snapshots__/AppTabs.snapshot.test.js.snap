@@ -1,0 +1,31 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Snapshot visual: AppTabs.vue > estructura con pestaña 'shopping-list' activa coincide con el snapshot 1`] = `
+"<nav data-v-642c808f="" class="tabs" role="tablist">
+  <ul data-v-642c808f="" class="tabs-list">
+    <li data-v-642c808f="" class="tab"><button data-v-642c808f="" id="recipe-creator-tab" class="tab-button" role="tab" aria-selected="false" aria-controls="recipe-creator"><i data-v-642c808f="" class="fas fa-magic"></i> Creador de Recetas </button></li>
+    <li data-v-642c808f="" class="tab"><button data-v-642c808f="" id="shopping-list-tab" class="tab-button active" role="tab" aria-selected="true" aria-controls="shopping-list"><i data-v-642c808f="" class="fas fa-shopping-cart"></i> Lista de Compras </button></li>
+    <li data-v-642c808f="" class="tab"><button data-v-642c808f="" class="tab-button" role="button" aria-label="Configuración de la aplicación"><i data-v-642c808f="" class="fas fa-cog"></i> Configuración </button></li>
+  </ul>
+</nav>"
+`;
+
+exports[`Snapshot visual: AppTabs.vue > estructura inicial coincide con el snapshot 1`] = `
+"<nav data-v-642c808f="" class="tabs" role="tablist">
+  <ul data-v-642c808f="" class="tabs-list">
+    <li data-v-642c808f="" class="tab"><button data-v-642c808f="" id="recipe-creator-tab" class="tab-button active" role="tab" aria-selected="true" aria-controls="recipe-creator"><i data-v-642c808f="" class="fas fa-magic"></i> Creador de Recetas </button></li>
+    <li data-v-642c808f="" class="tab"><button data-v-642c808f="" id="shopping-list-tab" class="tab-button" role="tab" aria-selected="false" aria-controls="shopping-list"><i data-v-642c808f="" class="fas fa-shopping-cart"></i> Lista de Compras </button></li>
+    <li data-v-642c808f="" class="tab"><button data-v-642c808f="" class="tab-button" role="button" aria-label="Configuración de la aplicación"><i data-v-642c808f="" class="fas fa-cog"></i> Configuración </button></li>
+  </ul>
+</nav>"
+`;
+
+exports[`Snapshot visual: AppTabs.vue > estructura inicial con pestaña 'recipe-creator' activa coincide con el snapshot 1`] = `
+"<nav data-v-642c808f="" class="tabs" role="tablist">
+  <ul data-v-642c808f="" class="tabs-list">
+    <li data-v-642c808f="" class="tab"><button data-v-642c808f="" id="recipe-creator-tab" class="tab-button active" role="tab" aria-selected="true" aria-controls="recipe-creator"><i data-v-642c808f="" class="fas fa-magic"></i> Creador de Recetas </button></li>
+    <li data-v-642c808f="" class="tab"><button data-v-642c808f="" id="shopping-list-tab" class="tab-button" role="tab" aria-selected="false" aria-controls="shopping-list"><i data-v-642c808f="" class="fas fa-shopping-cart"></i> Lista de Compras </button></li>
+    <li data-v-642c808f="" class="tab"><button data-v-642c808f="" class="tab-button" role="button" aria-label="Configuración de la aplicación"><i data-v-642c808f="" class="fas fa-cog"></i> Configuración </button></li>
+  </ul>
+</nav>"
+`;

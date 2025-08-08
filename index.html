@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RecetIA - Generador de Recetas con IA</title>
+    <meta name="author" content="Sebastián Guanque" />
+    <meta
+      name="description"
+      content="RecetIA es tu asistente inteligente para la cocina. Genera recetas personalizadas con IA a partir de tus ingredientes, crea listas de compras y organiza tus comidas diarias para evitar el desperdicio."
+    />
+    <meta
+      name="keywords"
+      content="RecetIA, recetas con IA, recetas ia, generador de recetas, inteligencia artificial, planificación de comidas, lista de compras, inventario de alimentos, evitar desperdicio, nutrición, cocina inteligente, recetas personalizadas, meal planning, cocina sostenible, recetas saludables, organización de comidas, cocina fácil, recetas rápidas, recetas económicas, recetas familiares, recetas vegetarianas, recetas veganas, recetas sin gluten, recetas saludables con IA"
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://sebastianguanque.dev.ar/recetia" />
+    <meta name="theme-color" content="#667eea" />
+    <meta name="application-name" content="RecetIA" />
+    <meta name="msapplication-TileColor" content="#667eea" />
+
+    <!-- Meta Property -->
+    <meta property="og:title" content="RecetIA - Generador de Recetas con IA" />
+    <meta
+      property="og:description"
+      content="Genera recetas únicas con IA usando tus ingredientes, crea listas de compras inteligentes y organiza tu cocina para reducir el desperdicio. ¡Simplifica tu vida culinaria con RecetIA!"
+    />
+    <meta
+      property="og:image"
+      content="https://sebastianguanque.dev.ar/recetia/assets/recetia-logo.jpg"
+    />
+    <meta
+      property="og:image:alt"
+      content="Logo de RecetIA - Generador de Recetas con IA"
+    />
+    <meta property="og:url" content="https://sebastianguanque.dev.ar/recetia" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@sebastian1g_" />
+    <meta
+      name="twitter:title"
+      content="RecetIA - Generador de Recetas con IA"
+    />
+    <meta
+      name="twitter:description"
+      content="Descubre recetas con IA basadas en tus ingredientes, gestiona tu inventario y genera listas de compras precisas para evitar el desperdicio. ¡Tu app de cocina definitiva!"
+    />
+    <meta
+      name="twitter:image"
+      content="https://sebastianguanque.dev.ar/recetia/assets/recetia-logo.jpg"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="Captura de pantalla de RecetIA mostrando una receta generada por IA"
+    />
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+        <header class="header">
+          <h1><i class="fas fa-utensils"></i> RecetIA</h1>
+          <p>Genera recetas personalizadas con Inteligencia Artificial</p>
+        </header>
+
+        <!-- API Key Setup -->
+        <div id="apiKeySetup" class="api-setup">
+          <div class="api-card">
+            <h3><i class="fas fa-key"></i> Configuración de API</h3>
+            <p>
+              Para usar la aplicación, necesitas una API Key de Google Gemini
+            </p>
+            <div class="input-group">
+              <input
+                type="password"
+                id="apiKeyInput"
+                placeholder="Ingresa tu API Key de Gemini"
+              />
+              <button onclick="saveApiKey()">Guardar</button>
+            </div>
+            <small>
+              <a
+                href="https://makersuite.google.com/app/apikey"
+                target="_blank"
+              >
+                <i class="fas fa-external-link-alt"></i> Obtener API Key
+                gratuita
+              </a>
+            </small>
+          </div>
+        </div>
+
+        <!-- Main App -->
+        <div id="mainApp" class="main-app" style="display: none">
+          <!-- Navigation Tabs -->
+          <nav class="tabs">
+            <button
+              class="tab-button active"
+              onclick="switchTab('recipe-creator')"
+            >
+              <i class="fas fa-magic"></i> Creador de Recetas
+            </button>
+            <button class="tab-button" onclick="switchTab('shopping-list')">
+              <i class="fas fa-shopping-cart"></i> Lista de Compras
+            </button>
+            <button class="tab-button" onclick="showSettings()">
+              <i class="fas fa-cog"></i> Configuración
+            </button>
+          </nav>
+
+          <!-- Recipe Creator Tab -->
+          <div id="recipe-creator" class="tab-content active">
+            <div class="section">
+              <h2>
+                <i class="fas fa-magic"></i> Creador de Recetas Inteligente
+              </h2>
+              <p>
+                Administra tus ingredientes y genera recetas personalizadas con
+                IA
+              </p>
+
+              <div class="inventory-section">
+                <div class="section-header">
+                  <h3>Mis Ingredientes:</h3>
+                  <button
+                    class="clear-btn"
+                    onclick="clearAllIngredients()"
+                    title="Limpiar todos los ingredientes"
+                  >
+                    <i class="fas fa-trash-alt"></i> Limpiar Todo
+                  </button>
+                </div>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="inventoryItem"
+                    placeholder="Ej: tomates, cebolla, pollo, arroz..."
+                  />
+                  <button onclick="addInventoryItem()">
+                    <i class="fas fa-plus"></i> Agregar
+                  </button>
+                </div>
+
+                <div id="inventoryList" class="inventory-list"></div>
+              </div>
+
+              <div class="meal-type-section">
+                <h3>Tipo de comida:</h3>
+                <div class="meal-buttons">
+                  <button class="meal-btn" data-meal="desayuno">
+                    <i class="fas fa-sun"></i> Desayuno
+                  </button>
+                  <button class="meal-btn" data-meal="almuerzo">
+                    <i class="fas fa-utensils"></i> Almuerzo
+                  </button>
+                  <button class="meal-btn" data-meal="merienda">
+                    <i class="fas fa-cookie"></i> Merienda
+                  </button>
+                  <button class="meal-btn" data-meal="cena">
+                    <i class="fas fa-moon"></i> Cena
+                  </button>
+                </div>
+              </div>
+
+              <button
+                class="generate-btn"
+                onclick="generateRecipe()"
+                id="generateRecipeBtn"
+              >
+                <i class="fas fa-magic"></i> Generar Receta
+              </button>
+
+              <div id="recipeResult" class="result-section"></div>
+            </div>
+          </div>
+
+          <!-- Shopping List Tab -->
+          <div id="shopping-list" class="tab-content">
+            <div class="section">
+              <h2>
+                <i class="fas fa-shopping-cart"></i> Lista de Compras
+                Inteligente
+              </h2>
+              <p>
+                Genera automáticamente tu lista de compras basada en las recetas
+                y tus ingredientes actuales
+              </p>
+
+              <div class="shopping-controls">
+                <div class="recipe-selection">
+                  <div class="section-header">
+                    <h3>Recetas Guardadas:</h3>
+                    <button
+                      class="clear-btn"
+                      onclick="clearAllRecipes()"
+                      title="Eliminar todas las recetas guardadas"
+                    >
+                      <i class="fas fa-trash-alt"></i> Eliminar Todas
+                    </button>
+                  </div>
+                  <div id="savedRecipesList" class="saved-recipes-list">
+                    <p class="no-recipes">
+                      No hay recetas guardadas. Genera algunas recetas primero.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="shopping-options">
+                  <h3>Opciones de Lista:</h3>
+                  <div class="option-group">
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="includeBasics" checked />
+                      <span class="checkmark"></span>
+                      Incluir ingredientes básicos (sal, aceite, especias)
+                    </label>
+                  </div>
+                  <div class="option-group">
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="groupByCategory" checked />
+                      <span class="checkmark"></span>
+                      Agrupar por categorías (carnes, vegetales, etc.)
+                    </label>
+                  </div>
+                  <div class="option-group">
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="excludeInventory" checked />
+                      <span class="checkmark"></span>
+                      Excluir ingredientes que ya tengo
+                    </label>
+                  </div>
+                </div>
+
+                <button
+                  class="generate-btn"
+                  onclick="generateShoppingList()"
+                  id="generateShoppingBtn"
+                >
+                  <i class="fas fa-list-alt"></i> Generar Lista de Compras
+                </button>
+              </div>
+
+              <div id="shoppingListResult" class="result-section"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay">
+          <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Generando con IA...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
