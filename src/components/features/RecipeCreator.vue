@@ -32,7 +32,7 @@
       v-if="recipeGenerator.generatedRecipe.value"
       class="save-btn"
       @click="handleSaveRecipe"
-      style="margin-top: 16px;"
+      style="margin-top: 16px"
     >
       <i class="fas fa-save"></i>
       Guardar Receta
