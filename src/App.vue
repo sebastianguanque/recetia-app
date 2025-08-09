@@ -1,29 +1,29 @@
 <template>
   <div class="app">
     <AppHeader />
-    
+
     <main class="container">
       <router-view />
     </main>
-    
+
     <AppFooter />
-    
+
     <LoadingOverlay v-if="appStore.isLoading" />
   </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import AppHeader from '@/components/layout/AppHeader.vue'
-import AppFooter from '@/components/layout/AppFooter.vue'
-import LoadingOverlay from '@/components/ui/LoadingOverlay.vue'
-import { useAppStore } from '@/stores/app'
+import { onMounted } from "vue";
+import AppHeader from "@/components/layout/AppHeader.vue";
+import AppFooter from "@/components/layout/AppFooter.vue";
+import LoadingOverlay from "@/components/ui/LoadingOverlay.vue";
+import { useAppStore } from "@/stores/app";
 
-const appStore = useAppStore()
+const appStore = useAppStore();
 
 onMounted(() => {
-  appStore.initializeApp()
-})
+  appStore.initializeApp();
+});
 </script>
 
 <style scoped>
