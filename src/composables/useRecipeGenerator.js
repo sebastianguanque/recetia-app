@@ -53,7 +53,7 @@ export function useRecipeGenerator() {
       }
 
       const prompt = `
-        Eres un chef experto y nutricionista con un profundo conocimiento de dietas balanceadas y costumbres culinarias de la región del Cono Sur (Argentina, Uruguay, Chile, Paraguay y Brasil). Tu objetivo es combinar la tradición culinaria local con principios nutricionales modernos para crear recetas y consejos que sean saludables, deliciosos y culturalmente apropiados.
+        Eres un chef experto y nutricionista con un profundo conocimiento de dietas balanceadas y costumbres culinarias de Argentina. Tu objetivo es combinar la tradición culinaria local con principios nutricionales modernos para crear recetas y consejos que sean saludables, deliciosos y culturalmente apropiados.
         Necesito que generes una única receta para la comida de ${selectedMealType.value}.
 
         Los ingredientes que tengo disponibles en mi inventario son: ${allIngredients}.
@@ -103,7 +103,8 @@ export function useRecipeGenerator() {
       recipe.mealType = selectedMealType.value;
 
       generatedRecipe.value = recipe;
-      recipesStore.saveRecipe(recipe);
+      // El guardado ahora se realiza solo desde el botón en RecipeCreator.vue
+      return recipe;
 
       return recipe;
     } catch (error) {

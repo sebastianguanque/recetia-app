@@ -20,3 +20,8 @@ yarn-error.log
 # Logs y bases de datos locales
 *.log
 *.db
+
+# Archivos de configuración de pruebas
+README-flujo-resultado.md
+README-flujo-playwright.md
+

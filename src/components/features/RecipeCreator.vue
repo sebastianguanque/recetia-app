@@ -28,6 +28,15 @@
       :meal-type="recipeGenerator.selectedMealType.value"
       class="recipe-result"
     />
+    <button
+      v-if="recipeGenerator.generatedRecipe.value"
+      class="save-btn"
+      @click="handleSaveRecipe"
+      style="margin-top: 16px;"
+    >
+      <i class="fas fa-save"></i>
+      Guardar Receta
+    </button>
   </div>
 </template>
 
@@ -39,23 +48,40 @@ import RecipeCard from "@/components/ui/RecipeCard.vue";
 import { useRecipeGenerator } from "@/composables/useRecipeGenerator";
 import { useIngredientsStore } from "@/stores/ingredients";
 import { useAppStore } from "@/stores/app";
+import { useApiStore } from "@/stores/api";
 
 const recipeGenerator = useRecipeGenerator();
 const ingredientsStore = useIngredientsStore();
 const appStore = useAppStore();
+const apiStore = useApiStore();
 
 const canGenerateRecipe = computed(
   () =>
     ingredientsStore.ingredients.length > 0 &&
-    recipeGenerator.selectedMealType.value
+    recipeGenerator.selectedMealType.value &&
+    apiStore.hasApiKey
 );
 
 const handleGenerateRecipe = async () => {
+  if (!apiStore.hasApiKey) {
+    alert("Debes ingresar una API Key válida antes de generar una receta.");
+    return;
+  }
   try {
     await recipeGenerator.generateRecipe();
   } catch (error) {
     alert(error.message);
   }
+};
+
+import { useRecipesStore } from "@/stores/recipes";
+const recipesStore = useRecipesStore();
+
+const handleSaveRecipe = () => {
+  const receta = recipeGenerator.generatedRecipe.value;
+  if (!receta) return;
+  recipesStore.saveRecipe(receta);
+  alert("Receta guardada correctamente.");
 };
 </script>
 
@@ -93,6 +119,31 @@ const handleGenerateRecipe = async () => {
   cursor: pointer;
   transition: transform 0.3s ease;
   margin: 20px 0;
+}
+
+.save-btn {
+  width: 100%;
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-bottom: 10px;
+  margin-top: 0;
+  transition: transform 0.3s ease;
+}
+.save-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+.save-btn i {
+  margin-right: 10px;
 }
 
 .generate-btn:hover:not(:disabled) {

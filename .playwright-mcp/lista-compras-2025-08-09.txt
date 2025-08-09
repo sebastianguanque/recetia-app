@@ -1,0 +1,25 @@
+=== LISTA DE COMPRAS ===
+
+Generada el: 9/8/2025
+Total de productos: 6
+Productos completados: 0
+
+PRODUCTOS PENDIENTES:
+
+VEGETALES Y FRUTAS:
+☐ 1 Limón
+
+CEREALES Y GRANOS:
+☐ 1 taza de Quinoa
+
+CONDIMENTOS Y ESPECIAS:
+☐ 1 cucharadita de pimentón dulce
+☐ Sal
+☐ Pimienta
+☐ Perejil fresco (opcional)
+
+OTROS:
+☐ 2 cucharadas de aceite de oliva
+☐ 1 cebolla mediana
+☐ 2 dientes de ajo
+☐ 1 taza de espinacas frescas
