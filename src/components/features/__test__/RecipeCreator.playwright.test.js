@@ -13,9 +13,7 @@ test.describe("Botón Guardar Receta en RecipeCreator", () => {
       'input[aria-label="Ingresa tu API Key de Gemini"]',
       { timeout: 10000 }
     );
-    await page
-      .getByLabel("Ingresa tu API Key de Gemini")
-      .fill("AIzaSyB6c-Uj8MSovr_jEEt0hhSK96LzAhUF-Ok");
+    await page.getByLabel("Ingresa tu API Key de Gemini").fill("");
     await page.getByRole("button", { name: /Guardar/i }).click();
 
     // Espera a que se redirija a la vista principal
