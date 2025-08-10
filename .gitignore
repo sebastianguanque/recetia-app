@@ -21,7 +21,6 @@ yarn-error.log
 *.log
 *.db
 
-# Archivos de configuración de pruebas
-README-flujo-resultado.md
-README-flujo-playwright.md
-
+# Directorios de configuración y tests
+.github/
+.playwright-mcp/
