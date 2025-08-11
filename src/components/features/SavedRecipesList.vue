@@ -16,7 +16,7 @@
     <ul class="saved-recipes-list">
       <li v-if="recipesStore.savedRecipes.length === 0" class="no-recipes">
         <i class="fas fa-book-dead no-recipes-icon"></i>
-        <p>No hay recetas guardadas.<br>Genera algunas recetas primero.</p>
+        <p>No hay recetas guardadas.<br />Genera algunas recetas primero.</p>
       </li>
 
       <li
@@ -54,21 +54,28 @@
           >
             <i class="fas fa-trash"></i>
           </button>
-            <button
-              class="recipe-view-btn"
-              title="Ver receta"
-              :aria-label="`Ver receta ${recipe.data.nombre}`"
-              @click="handleViewRecipe(recipe)"
-            >
-              <i class="fas fa-eye"></i> Ver
-            </button>
+          <button
+            class="recipe-view-btn"
+            title="Ver receta"
+            :aria-label="`Ver receta ${recipe.data.nombre}`"
+            @click="handleViewRecipe(recipe)"
+          >
+            <i class="fas fa-eye"></i> Ver
+          </button>
         </div>
       </li>
     </ul>
     <transition name="modal-fade">
-      <div v-if="showModal" class="modal-overlay blur-bg" @click.self="closeModal" tabindex="-1">
+      <div
+        v-if="showModal"
+        class="modal-overlay blur-bg"
+        @click.self="closeModal"
+        tabindex="-1"
+      >
         <div class="modal-content" ref="modalContent">
-          <button class="close-modal-btn" @click="closeModal" ref="closeBtn">Cerrar</button>
+          <button class="close-modal-btn" @click="closeModal" ref="closeBtn">
+            Cerrar
+          </button>
           <RecipeCard :recipe="selectedRecipe.data" />
           <div class="copy-actions">
             <button class="copy-btn" @click="copyIngredients">
@@ -137,14 +144,22 @@ const closeModal = () => {
 
 const copyIngredients = () => {
   if (!selectedRecipe.value) return;
-  const ingredients = selectedRecipe.value.data.ingredientes?.map(ing => ing.nombre ? `${ing.cantidad || ''} ${ing.unidad || ''} ${ing.nombre}`.trim() : ing).join("\n") || '';
+  const ingredients =
+    selectedRecipe.value.data.ingredientes
+      ?.map((ing) =>
+        ing.nombre
+          ? `${ing.cantidad || ""} ${ing.unidad || ""} ${ing.nombre}`.trim()
+          : ing
+      )
+      .join("\n") || "";
   navigator.clipboard.writeText(ingredients);
   alert("Ingredientes copiados al portapapeles.");
 };
 
 const copyInstructions = () => {
   if (!selectedRecipe.value) return;
-  const instructions = selectedRecipe.value.data.instrucciones?.join("\n") || '';
+  const instructions =
+    selectedRecipe.value.data.instrucciones?.join("\n") || "";
   navigator.clipboard.writeText(instructions);
   alert("Instrucciones copiadas al portapapeles.");
 };
@@ -343,7 +358,7 @@ watch(showModal, (val) => {
   justify-content: center;
   gap: 8px;
   font-weight: 500;
-  box-shadow: 0 2px 8px rgba(40,167,69,0.08);
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.08);
 }
 .recipe-view-btn:hover {
   background: #218838;
@@ -356,7 +371,7 @@ watch(showModal, (val) => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -391,7 +406,7 @@ watch(showModal, (val) => {
   font-size: 1rem;
   font-weight: 500;
   z-index: 2;
-  box-shadow: 0 2px 8px rgba(220,53,69,0.08);
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.08);
 }
 .close-modal-btn:hover {
   background: #c82333;
@@ -401,8 +416,14 @@ watch(showModal, (val) => {
   outline: 2px solid #667eea;
 }
 @keyframes modal-pop {
-  0% { transform: scale(0.95); opacity: 0.7; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 @media (max-width: 768px) {
   .modal-content {
@@ -426,12 +447,68 @@ watch(showModal, (val) => {
     margin-top: 12px;
     align-items: stretch;
   }
+  .recipe-item {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 8px;
+  }
+  .recipe-info-compact {
+    margin-bottom: 10px;
+  }
+  .recipe-actions {
+    flex-direction: row;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+  }
+  .recipe-select-btn,
+  .recipe-delete-btn,
+  .recipe-view-btn {
+    width: 100%;
+    font-size: 0.95rem;
+    padding: 8px 0;
+  }
+}
+@media (max-width: 500px) {
+  .recipe-actions {
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    justify-content: stretch;
+    align-items: stretch;
+  }
+  .recipe-select-btn,
+  .recipe-delete-btn,
+  .recipe-view-btn {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 1rem;
+  }
+}
+@media (max-width: 400px) {
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .clear-btn {
+    width: 100%;
+    margin-top: 8px;
+    font-size: 1rem;
+    padding: 10px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
 }
 
-.modal-fade-enter-active, .modal-fade-leave-active {
+.modal-fade-enter-active,
+.modal-fade-leave-active {
   transition: opacity 0.25s;
 }
-.modal-fade-enter-from, .modal-fade-leave-to {
+.modal-fade-enter-from,
+.modal-fade-leave-to {
   opacity: 0;
 }
 
