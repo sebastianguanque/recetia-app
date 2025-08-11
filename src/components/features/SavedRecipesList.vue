@@ -15,7 +15,8 @@
 
     <ul class="saved-recipes-list">
       <li v-if="recipesStore.savedRecipes.length === 0" class="no-recipes">
-        <p>No hay recetas guardadas. Genera algunas recetas primero.</p>
+        <i class="fas fa-book-dead no-recipes-icon"></i>
+        <p>No hay recetas guardadas.<br>Genera algunas recetas primero.</p>
       </li>
 
       <li
@@ -53,14 +54,40 @@
           >
             <i class="fas fa-trash"></i>
           </button>
+            <button
+              class="recipe-view-btn"
+              title="Ver receta"
+              :aria-label="`Ver receta ${recipe.data.nombre}`"
+              @click="handleViewRecipe(recipe)"
+            >
+              <i class="fas fa-eye"></i> Ver
+            </button>
         </div>
       </li>
     </ul>
+    <transition name="modal-fade">
+      <div v-if="showModal" class="modal-overlay blur-bg" @click.self="closeModal" tabindex="-1">
+        <div class="modal-content" ref="modalContent">
+          <button class="close-modal-btn" @click="closeModal" ref="closeBtn">Cerrar</button>
+          <RecipeCard :recipe="selectedRecipe.data" />
+          <div class="copy-actions">
+            <button class="copy-btn" @click="copyIngredients">
+              <i class="fas fa-copy"></i> Copiar ingredientes
+            </button>
+            <button class="copy-btn" @click="copyInstructions">
+              <i class="fas fa-copy"></i> Copiar instrucciones
+            </button>
+          </div>
+        </div>
+      </div>
+    </transition>
   </section>
 </template>
 
 <script setup>
+import { ref, onMounted, watch, nextTick } from "vue";
 import { useRecipesStore } from "@/stores/recipes";
+import RecipeCard from "@/components/ui/RecipeCard.vue";
 
 const recipesStore = useRecipesStore();
 
@@ -92,6 +119,50 @@ const handleClearAll = () => {
     recipesStore.clearAllRecipes();
   }
 };
+
+const showModal = ref(false);
+const selectedRecipe = ref(null);
+const modalContent = ref(null);
+const closeBtn = ref(null);
+
+const handleViewRecipe = (recipe) => {
+  selectedRecipe.value = recipe;
+  showModal.value = true;
+};
+
+const closeModal = () => {
+  showModal.value = false;
+  selectedRecipe.value = null;
+};
+
+const copyIngredients = () => {
+  if (!selectedRecipe.value) return;
+  const ingredients = selectedRecipe.value.data.ingredientes?.map(ing => ing.nombre ? `${ing.cantidad || ''} ${ing.unidad || ''} ${ing.nombre}`.trim() : ing).join("\n") || '';
+  navigator.clipboard.writeText(ingredients);
+  alert("Ingredientes copiados al portapapeles.");
+};
+
+const copyInstructions = () => {
+  if (!selectedRecipe.value) return;
+  const instructions = selectedRecipe.value.data.instrucciones?.join("\n") || '';
+  navigator.clipboard.writeText(instructions);
+  alert("Instrucciones copiadas al portapapeles.");
+};
+
+const handleKeyDown = (e) => {
+  if (showModal.value && e.key === "Escape") {
+    closeModal();
+  }
+};
+
+onMounted(() => {
+  window.addEventListener("keydown", handleKeyDown);
+  return () => window.removeEventListener("keydown", handleKeyDown);
+});
+
+watch(showModal, (val) => {
+  if (val && closeBtn.value) closeBtn.value.focus();
+});
 </script>
 
 <style scoped>
@@ -159,11 +230,22 @@ const handleClearAll = () => {
   text-align: center;
   color: #666;
   font-style: italic;
-  padding: 20px;
+  padding: 28px 10px 18px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.no-recipes-icon {
+  font-size: 3.2rem;
+  color: #e9ecef;
+  margin-bottom: 8px;
 }
 
 .no-recipes p {
   margin: 0;
+  font-size: 1.1rem;
 }
 
 .recipe-item {
@@ -247,22 +329,135 @@ const handleClearAll = () => {
   background: #c82333;
 }
 
+.recipe-view-btn {
+  padding: 8px 16px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(40,167,69,0.08);
+}
+.recipe-view-btn:hover {
+  background: #218838;
+  transform: translateY(-1px);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  overflow: auto;
+}
+.modal-content {
+  background: #fff;
+  border-radius: 18px;
+  padding: 36px 32px 28px 32px;
+  box-shadow: 0 12px 40px rgba(40, 40, 40, 0.18);
+  max-width: 540px;
+  width: 95vw;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  animation: modal-pop 0.25s;
+}
+.close-modal-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(220,53,69,0.08);
+}
+.close-modal-btn:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+}
+.close-modal-btn:focus {
+  outline: 2px solid #667eea;
+}
+@keyframes modal-pop {
+  0% { transform: scale(0.95); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
 @media (max-width: 768px) {
-  .section-header {
+  .modal-content {
+    max-width: 98vw;
+    padding: 18px 8px 12px 8px;
+    max-height: 98vh;
+  }
+  .close-modal-btn {
+    top: 8px;
+    right: 8px;
+    padding: 6px 10px;
+    font-size: 0.9rem;
+  }
+  .recipe-view-btn {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+  }
+  .copy-actions {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+    gap: 8px;
+    margin-top: 12px;
+    align-items: stretch;
   }
+}
 
-  .recipe-actions {
-    flex-direction: column;
-    gap: 4px;
-  }
+.modal-fade-enter-active, .modal-fade-leave-active {
+  transition: opacity 0.25s;
+}
+.modal-fade-enter-from, .modal-fade-leave-to {
+  opacity: 0;
+}
 
-  .recipe-select-btn,
-  .recipe-delete-btn {
-    font-size: 0.8rem;
-    padding: 4px 8px;
-  }
+.blur-bg {
+  backdrop-filter: blur(4px);
+}
+.copy-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+  justify-content: flex-end;
+}
+.copy-btn {
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 14px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s;
+}
+.copy-btn:hover {
+  background: #5a6fd8;
 }
 </style>
