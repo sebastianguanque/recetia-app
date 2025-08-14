@@ -19,13 +19,23 @@
 
       <button
         class="generate-btn"
-        :disabled="!canGenerateList || appStore.isLoading"
         aria-label="Generar lista de compras"
         @click="handleGenerateShoppingList"
+        :disabled="appStore.isLoading"
+        ref="generateBtn"
       >
         <i class="fas fa-list-alt"></i>
         {{ appStore.isLoading ? "Generando..." : "Generar Lista de Compras" }}
       </button>
+      <div
+        v-if="errorMessage"
+        class="error-message"
+        aria-live="assertive"
+        tabindex="-1"
+        ref="errorRef"
+      >
+        {{ errorMessage }}
+      </div>
     </div>
 
     <ShoppingListResult
@@ -38,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, nextTick } from "vue";
 import SavedRecipesList from "@/components/features/SavedRecipesList.vue";
 import ShoppingOptions from "@/components/ui/ShoppingOptions.vue";
 import ShoppingListResult from "@/components/features/ShoppingListResult.vue";
@@ -62,14 +72,31 @@ const canGenerateList = computed(
   () => recipesStore.selectedRecipesForShopping.length > 0
 );
 
+const errorMessage = ref("");
+const errorRef = ref(null);
+const generateBtn = ref(null);
+
 const handleGenerateShoppingList = async () => {
+  if (appStore.isLoading) return;
+  if (recipesStore.selectedRecipesForShopping.length === 0) {
+    errorMessage.value =
+      "Selecciona al menos una receta antes de generar la lista de compras.";
+    nextTick(() => {
+      if (errorRef.value) errorRef.value.focus();
+    });
+    return;
+  }
+  errorMessage.value = "";
   try {
     const result = await shoppingListGenerator.generateShoppingList(
       shoppingOptions.value
     );
     shoppingListData.value = result;
   } catch (error) {
-    alert(error.message);
+    errorMessage.value = error.message;
+    nextTick(() => {
+      if (errorRef.value) errorRef.value.focus();
+    });
   }
 };
 
@@ -125,10 +152,15 @@ const clearShoppingList = () => {
   transform: translateY(-2px);
 }
 
-.generate-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
+.error-message {
+  color: #dc3545;
+  background: #fff3f3;
+  border: 1px solid #dc3545;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-top: 8px;
+  font-size: 1rem;
+  outline: none;
 }
 
 .generate-btn i {

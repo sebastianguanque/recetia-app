@@ -4,13 +4,22 @@
       <h3>Mis Ingredientes:</h3>
       <button
         class="clear-btn"
-        :disabled="ingredientsStore.ingredients.length === 0"
         title="Limpiar todos los ingredientes"
         aria-label="Limpiar todos los ingredientes"
         @click="handleClearAll"
+        ref="clearBtn"
       >
         <i class="fas fa-trash-alt"></i> Limpiar Todo
       </button>
+      <div
+        v-if="clearErrorMessage"
+        class="error-message"
+        aria-live="assertive"
+        tabindex="-1"
+        ref="clearErrorRef"
+      >
+        {{ clearErrorMessage }}
+      </div>
     </header>
 
     <form class="input-form" @submit.prevent="handleAddIngredient">
@@ -23,13 +32,18 @@
           placeholder="Ej: tomates, cebolla, pollo, arroz..."
           aria-label="Ingresa un ingrediente"
         />
-        <button
-          type="submit"
-          :disabled="!newIngredient.trim()"
-          aria-label="Agregar ingrediente"
-        >
+        <button type="submit" aria-label="Agregar ingrediente" ref="addBtn">
           <i class="fas fa-plus"></i> Agregar
         </button>
+        <div
+          v-if="errorMessage"
+          class="error-message"
+          aria-live="assertive"
+          tabindex="-1"
+          ref="errorRef"
+        >
+          {{ errorMessage }}
+        </div>
       </div>
     </form>
 
@@ -62,20 +76,42 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
 import { useIngredientsStore } from "@/stores/ingredients";
 
 const ingredientsStore = useIngredientsStore();
 const newIngredient = ref("");
 
+const errorMessage = ref("");
+const errorRef = ref(null);
+const addBtn = ref(null);
+
 const handleAddIngredient = () => {
-  if (newIngredient.value.trim()) {
-    ingredientsStore.addIngredient(newIngredient.value.trim());
-    newIngredient.value = "";
+  if (!newIngredient.value.trim()) {
+    errorMessage.value = "Debes ingresar un ingrediente antes de agregar.";
+    nextTick(() => {
+      if (errorRef.value) errorRef.value.focus();
+    });
+    return;
   }
+  errorMessage.value = "";
+  ingredientsStore.addIngredient(newIngredient.value.trim());
+  newIngredient.value = "";
 };
 
+const clearErrorMessage = ref("");
+const clearErrorRef = ref(null);
+const clearBtn = ref(null);
+
 const handleClearAll = () => {
+  if (ingredientsStore.ingredients.length === 0) {
+    clearErrorMessage.value = "No hay ingredientes para eliminar.";
+    nextTick(() => {
+      if (clearErrorRef.value) clearErrorRef.value.focus();
+    });
+    return;
+  }
+  clearErrorMessage.value = "";
   if (
     confirm("¿Estás seguro de que quieres eliminar todos los ingredientes?")
   ) {
@@ -172,9 +208,15 @@ const handleClearAll = () => {
   background: #5a6fd8;
 }
 
-.input-group button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.error-message {
+  color: #dc3545;
+  background: #fff3f3;
+  border: 1px solid #dc3545;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-top: 8px;
+  font-size: 1rem;
+  outline: none;
 }
 
 .inventory-list {

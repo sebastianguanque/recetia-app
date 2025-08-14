@@ -4,13 +4,22 @@
       <h3>Recetas Guardadas:</h3>
       <button
         class="clear-btn"
-        :disabled="recipesStore.savedRecipes.length === 0"
         title="Eliminar todas las recetas guardadas"
         aria-label="Eliminar todas las recetas guardadas"
         @click="handleClearAll"
+        ref="clearBtn"
       >
         <i class="fas fa-trash-alt"></i> Eliminar Todas
       </button>
+      <div
+        v-if="errorMessage"
+        class="error-message"
+        aria-live="assertive"
+        tabindex="-1"
+        ref="errorRef"
+      >
+        {{ errorMessage }}
+      </div>
     </header>
 
     <ul class="saved-recipes-list">
@@ -117,7 +126,17 @@ const handleDeleteRecipe = (recipeId) => {
   }
 };
 
+const errorMessage = ref("");
+const errorRef = ref(null);
 const handleClearAll = () => {
+  if (recipesStore.savedRecipes.length === 0) {
+    errorMessage.value = "No hay recetas guardadas para eliminar.";
+    nextTick(() => {
+      if (errorRef.value) errorRef.value.focus();
+    });
+    return;
+  }
+  errorMessage.value = "";
   if (
     confirm(
       "¿Estás seguro de que quieres eliminar todas las recetas guardadas?"
@@ -536,5 +555,15 @@ watch(showModal, (val) => {
 }
 .copy-btn:hover {
   background: #5a6fd8;
+}
+.error-message {
+  color: #dc3545;
+  background: #fff3f3;
+  border: 1px solid #dc3545;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-top: 8px;
+  font-size: 1rem;
+  outline: none;
 }
 </style>

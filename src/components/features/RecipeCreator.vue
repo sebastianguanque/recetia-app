@@ -14,13 +14,23 @@
 
     <button
       class="generate-btn"
-      :disabled="!canGenerateRecipe || appStore.isLoading"
       aria-label="Generar receta"
       @click="handleGenerateRecipe"
+      :disabled="appStore.isLoading"
+      ref="generateBtn"
     >
       <i class="fas fa-magic"></i>
       {{ appStore.isLoading ? "Generando..." : "Generar Receta" }}
     </button>
+    <div
+      v-if="errorMessage"
+      class="error-message"
+      aria-live="assertive"
+      tabindex="-1"
+      ref="errorRef"
+    >
+      {{ errorMessage }}
+    </div>
 
     <RecipeCard
       v-if="recipeGenerator.generatedRecipe.value"
@@ -41,7 +51,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref, nextTick } from "vue";
 import IngredientsList from "@/components/features/IngredientsList.vue";
 import MealTypeSelector from "@/components/ui/MealTypeSelector.vue";
 import RecipeCard from "@/components/ui/RecipeCard.vue";
@@ -62,15 +72,44 @@ const canGenerateRecipe = computed(
     apiStore.hasApiKey
 );
 
+const errorMessage = ref("");
+const errorRef = ref(null);
+const generateBtn = ref(null);
+
 const handleGenerateRecipe = async () => {
+  if (appStore.isLoading) return;
   if (!apiStore.hasApiKey) {
-    alert("Debes ingresar una API Key válida antes de generar una receta.");
+    errorMessage.value =
+      "Debes ingresar una API Key válida antes de generar una receta.";
+    nextTick(() => {
+      if (errorRef.value) errorRef.value.focus();
+    });
     return;
   }
+  if (ingredientsStore.ingredients.length === 0) {
+    errorMessage.value =
+      "Agrega al menos un ingrediente antes de generar una receta.";
+    nextTick(() => {
+      if (errorRef.value) errorRef.value.focus();
+    });
+    return;
+  }
+  if (!recipeGenerator.selectedMealType.value) {
+    errorMessage.value =
+      "Selecciona un tipo de comida antes de generar la receta.";
+    nextTick(() => {
+      if (errorRef.value) errorRef.value.focus();
+    });
+    return;
+  }
+  errorMessage.value = "";
   try {
     await recipeGenerator.generateRecipe();
   } catch (error) {
-    alert(error.message);
+    errorMessage.value = error.message;
+    nextTick(() => {
+      if (errorRef.value) errorRef.value.focus();
+    });
   }
 };
 
@@ -150,10 +189,15 @@ const handleSaveRecipe = () => {
   transform: translateY(-2px);
 }
 
-.generate-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
+.error-message {
+  color: #dc3545;
+  background: #fff3f3;
+  border: 1px solid #dc3545;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-top: 8px;
+  font-size: 1rem;
+  outline: none;
 }
 
 .generate-btn i {
