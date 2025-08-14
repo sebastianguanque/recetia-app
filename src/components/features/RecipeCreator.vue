@@ -22,14 +22,15 @@
         aria-label="Selecciona el método de cocción"
         class="cooking-select"
       >
-        <option value="">Selecciona...</option>
-        <option value="Freidora de Aire">Freidora de Aire</option>
-        <option value="Horno">Horno</option>
-        <option value="Microondas">Microondas</option>
-        <option value="Parrilla">Parrilla</option>
-        <option value="Olla">Olla</option>
-        <option value="Sartén">Sartén</option>
-        <option value="Vapor">Vapor</option>
+  <option value="">Selecciona...</option>
+  <option value="Sin cocción">Sin cocción / No requiere cocción</option>
+  <option value="Freidora de Aire">Freidora de Aire</option>
+  <option value="Horno">Horno</option>
+  <option value="Microondas">Microondas</option>
+  <option value="Parrilla">Parrilla</option>
+  <option value="Olla">Olla</option>
+  <option value="Sartén">Sartén</option>
+  <option value="Vapor">Vapor</option>
       </select>
     </div>
 
@@ -118,14 +119,6 @@ const handleGenerateRecipe = async () => {
   if (!recipeGenerator.selectedMealType.value) {
     errorMessage.value =
       "Selecciona un tipo de comida antes de generar la receta.";
-    nextTick(() => {
-      if (errorRef.value) errorRef.value.focus();
-    });
-    return;
-  }
-  if (!recipeGenerator.selectedCookingMethod.value) {
-    errorMessage.value =
-      "Selecciona el método de cocción antes de generar la receta.";
     nextTick(() => {
       if (errorRef.value) errorRef.value.focus();
     });

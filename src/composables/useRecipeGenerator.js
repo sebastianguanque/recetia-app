@@ -27,11 +27,6 @@ export function useRecipeGenerator() {
       );
     }
 
-    if (!selectedCookingMethod.value) {
-      throw new Error(
-        "Selecciona el método de cocción antes de generar la receta."
-      );
-    }
 
     appStore.setLoading(true);
 
@@ -59,7 +54,14 @@ export function useRecipeGenerator() {
           break;
       }
 
-      const cookingMethodGuidelines = `El método de cocción seleccionado por el usuario es: ${selectedCookingMethod.value}. Adapta la receta y las instrucciones para que sean adecuadas para este método.`;
+      let cookingMethodGuidelines = "";
+      if (selectedCookingMethod.value === "Sin cocción") {
+        cookingMethodGuidelines = `El usuario indicó que no se requiere cocción. Genera una receta que no necesite cocción ni uso de electrodomésticos.`;
+      } else if (selectedCookingMethod.value) {
+        cookingMethodGuidelines = `El método de cocción seleccionado por el usuario es: ${selectedCookingMethod.value}. Adapta la receta y las instrucciones para que sean adecuadas para este método.`;
+      } else {
+        cookingMethodGuidelines = `No se seleccionó método de cocción. Recomienda el método más adecuado según los ingredientes y el tipo de comida.`;
+      }
 
       const prompt = `
         Eres un chef experto y nutricionista con un profundo conocimiento de dietas balanceadas y costumbres culinarias de Argentina. Tu objetivo es combinar la tradición culinaria local con principios nutricionales modernos para crear recetas y consejos que sean saludables, deliciosos y culturalmente apropiados.
