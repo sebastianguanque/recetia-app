@@ -11,6 +11,7 @@ export function useRecipeGenerator() {
   const ingredientsStore = useIngredientsStore();
 
   const selectedMealType = ref("");
+  const selectedCookingMethod = ref("");
   const generatedRecipe = ref(null);
 
   const generateRecipe = async () => {
@@ -23,6 +24,12 @@ export function useRecipeGenerator() {
     if (!selectedMealType.value) {
       throw new Error(
         "Por favor, selecciona un tipo de comida antes de generar la receta."
+      );
+    }
+
+    if (!selectedCookingMethod.value) {
+      throw new Error(
+        "Selecciona el método de cocción antes de generar la receta."
       );
     }
 
@@ -52,12 +59,15 @@ export function useRecipeGenerator() {
           break;
       }
 
+      const cookingMethodGuidelines = `El método de cocción seleccionado por el usuario es: ${selectedCookingMethod.value}. Adapta la receta y las instrucciones para que sean adecuadas para este método.`;
+
       const prompt = `
         Eres un chef experto y nutricionista con un profundo conocimiento de dietas balanceadas y costumbres culinarias de Argentina. Tu objetivo es combinar la tradición culinaria local con principios nutricionales modernos para crear recetas y consejos que sean saludables, deliciosos y culturalmente apropiados.
         Necesito que generes una única receta para la comida de ${selectedMealType.value}.
 
         Los ingredientes que tengo disponibles en mi inventario son: ${allIngredients}.
         ${mealTypeGuidelines}
+        ${cookingMethodGuidelines}
 
         Para la receta, proporciona:
         - **Nombre del plato**
@@ -101,11 +111,10 @@ export function useRecipeGenerator() {
       const recipe = JSON.parse(cleanResponse);
       recipe.id = Date.now().toString();
       recipe.mealType = selectedMealType.value;
+      recipe.cookingMethod = selectedCookingMethod.value;
 
       generatedRecipe.value = recipe;
       // El guardado ahora se realiza solo desde el botón en RecipeCreator.vue
-      return recipe;
-
       return recipe;
     } catch (error) {
       console.error("Error al generar la receta:", error);
@@ -117,6 +126,7 @@ export function useRecipeGenerator() {
 
   return {
     selectedMealType,
+    selectedCookingMethod,
     generatedRecipe,
     generateRecipe,
   };

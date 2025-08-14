@@ -12,6 +12,27 @@
       class="meal-type-section"
     />
 
+    <div class="cooking-method-section">
+      <label for="cookingMethod" class="cooking-label"
+        >Método de cocción:</label
+      >
+      <select
+        id="cookingMethod"
+        v-model="recipeGenerator.selectedCookingMethod.value"
+        aria-label="Selecciona el método de cocción"
+        class="cooking-select"
+      >
+        <option value="">Selecciona...</option>
+        <option value="Freidora de Aire">Freidora de Aire</option>
+        <option value="Horno">Horno</option>
+        <option value="Microondas">Microondas</option>
+        <option value="Parrilla">Parrilla</option>
+        <option value="Olla">Olla</option>
+        <option value="Sartén">Sartén</option>
+        <option value="Vapor">Vapor</option>
+      </select>
+    </div>
+
     <button
       class="generate-btn"
       aria-label="Generar receta"
@@ -102,6 +123,14 @@ const handleGenerateRecipe = async () => {
     });
     return;
   }
+  if (!recipeGenerator.selectedCookingMethod.value) {
+    errorMessage.value =
+      "Selecciona el método de cocción antes de generar la receta.";
+    nextTick(() => {
+      if (errorRef.value) errorRef.value.focus();
+    });
+    return;
+  }
   errorMessage.value = "";
   try {
     await recipeGenerator.generateRecipe();
@@ -125,6 +154,30 @@ const handleSaveRecipe = () => {
 </script>
 
 <style scoped>
+.cooking-method-section {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cooking-label {
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 4px;
+}
+.cooking-select {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 2px solid #e9ecef;
+  font-size: 1rem;
+  background: #fff;
+  color: #333;
+  transition: border-color 0.3s ease;
+}
+.cooking-select:focus {
+  outline: none;
+  border-color: #667eea;
+}
 .recipe-creator {
   display: flex;
   flex-direction: column;

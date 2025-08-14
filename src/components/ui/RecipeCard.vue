@@ -9,8 +9,11 @@
 
       <p>
         <strong>Tipo:</strong>
-
         {{ mealTypeLabel }}
+      </p>
+      <p v-if="recipe.cookingMethod">
+        <strong>Método de cocción:</strong>
+        {{ recipe.cookingMethod }}
       </p>
     </header>
 

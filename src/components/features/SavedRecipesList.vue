@@ -85,7 +85,10 @@
           <button class="close-modal-btn" @click="closeModal" ref="closeBtn">
             Cerrar
           </button>
-          <RecipeCard :recipe="selectedRecipe.data" />
+          <RecipeCard
+            :recipe="selectedRecipe.data"
+            :meal-type="selectedRecipe.data.mealType"
+          />
           <div class="copy-actions">
             <button class="copy-btn" @click="copyIngredients">
               <i class="fas fa-copy"></i> Copiar ingredientes
